@@ -8,16 +8,19 @@ import org.springframework.stereotype.Service;
 @AllArgsConstructor
 @Service
 public class BottleMessageCRUDService {
-    BottleMessage bottleMessage;
-    BottleMessageRepository bottleMessageRepository;
+
+            BottleMessageRepository bottleMessageRepository;
 
 
     public void addMessageToDatabase(BottleMessage bottleMessage) {
 
     }
     public BottleMessage getMessageInDatabase() {
+        BottleMessage bottleMessage = new BottleMessage();
         return bottleMessage;
     }
+
+
     public void deleteMessageInDatabase(BottleMessage bottleMessage) {
 
     }

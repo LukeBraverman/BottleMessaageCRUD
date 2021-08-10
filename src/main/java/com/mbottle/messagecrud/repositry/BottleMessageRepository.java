@@ -7,4 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @RepositoryRestResource
 public interface BottleMessageRepository extends JpaRepository<BottleMessage,String> {
+
+
 }
