@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,7 +59,7 @@ class BottleMessageControllerTest {
     void POSTInvalidMessageToDatabase_Return400BadRequest() throws Exception {
         //given
         String InvalidJsonPayload = "{\"UID\":\"12345\"," +
-                "\"username\":" + "\"testUsername\"}";
+                "\"INVALID\":" + "\"testUsername\"}";
         doNothing().when(bottleMessageCRUDService).addMessageToDatabase(any(BottleMessage.class));
         //when
         mockMvc.perform(
@@ -75,22 +76,25 @@ class BottleMessageControllerTest {
     @Test
     void GETMessageFORMDatabase_returnRandomMessageInDatabase() throws Exception {
         //given
+        String testBottleMessageJSON = "{\"UID\":\"12345\"," +
+                        " \"message\": \"testMessage\"" +
+                        ",\"username\":" + "\"testUsername\"}";
         BottleMessage testBottleMessage = new BottleMessage();
         testBottleMessage.setUID("12345");
         testBottleMessage.setMessage("testMessage");
         testBottleMessage.setUsername("testUsername");
-        when(bottleMessageCRUDService.getMessageInDatabase()).thenReturn(testBottleMessage);
-        String testBottleMessageJSON = "{\"UID\":\"12345\"," +
-                " \"message\": \"testMessage\"" +
-                ",\"username\":" + "\"testUsername\"}";
+        when(bottleMessageCRUDService.getMessageInDatabase_returnAsJson()).thenReturn(testBottleMessageJSON);
+
         //when
-        mockMvc.perform(
+        final MvcResult mvcResult = mockMvc.perform(
                 get("/BMAPI/getMessage"))
                 .andExpect(status().isOk())
-                .andExpect(content().string(containsSt))
                 .andReturn();
+        String content = mvcResult.getResponse().getContentAsString();
+
         //then
-        verify(bottleMessageCRUDService,times(1)).getMessageInDatabase();
+        assertEquals(testBottleMessageJSON,content,"Response body not as expected");
+        verify(bottleMessageCRUDService,times(1)).getMessageInDatabase_returnAsJson();
     }
 
     @Test
